@@ -1,0 +1,14 @@
+<form class="layui-form layui-form-pane form-search" action="{:sysuri()}" onsubmit="return false" method="get" autocomplete="off">
+    <fieldset>
+        <legend>{:lang('条件搜索')}</legend>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">{:lang('关键词')}</label>
+            <div class="layui-input-inline">
+                <input name="keyword" value="{$get.keyword|default=''}" placeholder="{:lang('表名或表注释')}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <button class="layui-btn layui-btn-primary"><i class="layui-icon layui-icon-search"></i> {:lang('搜 索')}</button>
+        </div>
+    </fieldset>
+</form>

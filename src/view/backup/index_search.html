@@ -1,0 +1,35 @@
+<form class="layui-form layui-form-pane form-search" action="{:sysuri()}" onsubmit="return false" method="get" autocomplete="off">
+    <fieldset>
+        <legend>{:lang('条件搜索')}</legend>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">{:lang('备份名称')}</label>
+            <div class="layui-input-inline">
+                <input name="name" value="{$get.name|default=''}" placeholder="{:lang('备份名称/文件名')}" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">{:lang('状态')}</label>
+            <div class="layui-input-inline">
+                <select class="layui-select" name="status" lay-append-to>
+                    <option value="">-- {:lang('全部')} --</option>
+                    <option value="1" {if isset($get.status) && $get.status == '1'}selected{/if}>{:lang('备份成功')}</option>
+                    <option value="0" {if isset($get.status) && $get.status == '0'}selected{/if}>{:lang('备份失败')}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">{:lang('创建时间')}</label>
+            <div class="layui-input-inline">
+                <input data-date-range name="create_at" value="{$get.create_at|default=''}" placeholder="{:lang('请选择创建时间')}" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <button class="layui-btn layui-btn-primary"><i class="layui-icon layui-icon-search"></i> {:lang('搜 索')}</button>
+        </div>
+
+    </fieldset>
+</form>

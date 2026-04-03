@@ -1,0 +1,56 @@
+<div class="layui-card" style="margin-bottom:0;">
+    <div class="layui-card-body" style="padding:0;overflow:hidden;">
+        <table id="DataPreviewTable" class="layui-table" style="margin:0;" lay-size="sm"></table>
+        <div id="DataPageBox" style="text-align:center;padding:10px;background:#fff;"></div>
+    </div>
+</div>
+
+<script>
+    var _tableName = '{:input("table")}';
+    var _page = 1;
+    var _limit = 20;
+
+    function loadData() {
+        $.get("{:url('data')}", {output: 'layui.table', table: _tableName, page: _page, limit: _limit}, function (res) {
+            if (res.code !== 0) {
+                $.msg.error(res.msg);
+                return;
+            }
+            var fields = res.fields || [];
+            var rows = res.data || [];
+
+            var cols = fields.map(function (f) {
+                return {field: f, title: f, width: 180, align: 'center'};
+            });
+
+            layui.table.render({
+                elem: '#DataPreviewTable',
+                cols: [cols],
+                data: rows,
+                limit: rows.length,
+                height: '800px',
+                even: true
+            });
+
+            layui.laypage.render({
+                elem: 'DataPageBox',
+                curr: _page,
+                limit: _limit,
+                count: res.count,
+                limits: [20, 50, 100],
+                layout: ['count', 'prev', 'page', 'next', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        _page = obj.curr;
+                        _limit = obj.limit;
+                        loadData();
+                    }
+                }
+            });
+        });
+    }
+
+    $(function () {
+        loadData();
+    });
+</script>

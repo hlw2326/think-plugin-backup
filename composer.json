@@ -1,0 +1,44 @@
+{
+    "type": "think-admin-plugin",
+    "name": "hlw2326/think-plugin-backup",
+    "homepage": "https://www.hlw2326.com",
+    "description": "HLW,SQL Data",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "hlw2326",
+            "email": "1608626143@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">8.2",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "files": [
+            "./src/helper.php"
+        ],
+        "psr-4": {
+            "plugin\\backup\\": "src"
+        }
+    },
+    "extra": {
+        "think": {
+            "services": [
+                "plugin\\backup\\Service"
+            ]
+        },
+        "plugin": {
+            "copy": {
+                "stc/database": "database/migrations"
+            }
+        },
+        "config": {
+            "type": "module",
+            "name": "数据备份",
+            "document": "https://www.hlw2326.com",
+            "description": "数据库备份插件",
+            "license": []
+        }
+    }
+}

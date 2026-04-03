@@ -1,0 +1,109 @@
+{extend name="table"}
+
+{block name="button"}
+<!--{if auth("add")}-->
+<button data-modal='{:url("add")}' data-title="{:lang('创建备份')}" class='layui-btn layui-btn-sm layui-btn-primary'>{:lang('创建备份')}</button>
+<!--{/if}-->
+<!--{if auth("remove")}-->
+<a data-confirm="{:lang('确定要删除这些备份吗？')}" data-table-id="BackupTable" data-action='{:url("remove")}' data-rule="id#{id}" class='layui-btn layui-btn-sm layui-btn-danger'>{:lang('批量删除')}</a>
+<!--{/if}-->
+<!--{if auth("clean")}-->
+<a data-action='{:url("clean")}' data-confirm="{:lang('确定要清理孤立的备份文件吗？')}" data-table-id="BackupTable" data-callback="reload" class='layui-btn layui-btn-sm layui-btn-normal'>{:lang('清理孤立文件')}</a>
+<!--{/if}-->
+{/block}
+
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='backup/index_search'}
+    <table id="BackupTable" data-url="{:sysuri('index')}" data-target-search="form.form-search"></table>
+</div>
+<label class="layui-hide">
+    <textarea id="StatusLabelsData">{:json_encode($status_labels, JSON_UNESCAPED_UNICODE)}</textarea>
+</label>
+<label class="layui-hide">
+    <textarea id="StorageTypesData">{:json_encode($storage_types, JSON_UNESCAPED_UNICODE)}</textarea>
+</label>
+
+<script type="text/html" id="StatusTpl">
+    {{- $.statusLabel(d.status) }}
+</script>
+
+<script type="text/html" id="SizeTpl">
+    <span>{{- $.formatSize(d.size) }}</span>
+</script>
+
+<script type="text/html" id="StorageTpl">
+    {{# if(d.storage_type && d.storage_type.length > 0){ }}
+    {{# var item = $.storageTypes[d.storage_type] || {label: d.storage_type}; }}
+    <span class="layui-badge layui-bg-blue">{{- item }}</span>
+    {{# } else { }}
+    <span class="layui-badge layui-bg-gray">{:lang('本地')}</span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="StorageUrlTpl">
+    {{# if(d.storage_url && d.storage_url.length > 0){ }}
+    <a href="{{- d.storage_url }}" target="_blank" title="{:lang('点击打开')}">
+        <i class="layui-icon layui-icon-link" style="font-size:12px"></i> {{- d.storage_url }}
+    </a>
+    {{# } else { }}
+    <span class="color-desc">-</span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="toolbar">
+    <!--{if auth("restore")}-->
+    <a class="layui-btn layui-btn-sm" data-confirm="{:lang('确定要还原该备份吗？')}" data-action="{:url('restore')}" data-value="id#{{d.id}}" data-table-id="BackupTable">{:lang('还原')}</a>
+    <!--{/if}-->
+    <!--{if auth("download")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-normal" href="{:url('download')}?id={{d.id}}" target="_blank">{:lang('下载')}</a>
+    <!--{/if}-->
+    <!--{if auth("remove")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-danger" data-confirm="{:lang('确定要删除该备份吗？')}" data-action="{:url('remove')}" data-value="id#{{d.id}}" data-table-id="BackupTable">{:lang('删 除')}</a>
+    <!--{/if}-->
+</script>
+
+<script>
+    $.statusLabel = (function () {
+        var labels = JSON.parse($('#StatusLabelsData').text());
+        return function (status) {
+            var item = labels[status] || {label: status, 'class': 'layui-bg-gray'};
+            return '<span class="layui-badge ' + item['class'] + '">' + item.label + '</span>';
+        };
+    })();
+
+    $.formatSize = function (bytes) {
+        if (bytes < 1024) {
+            return bytes + ' B';
+        } else if (bytes < 1048576) {
+            return (bytes / 1024).toFixed(2) + ' KB';
+        } else if (bytes < 1073741824) {
+            return (bytes / 1048576).toFixed(2) + ' MB';
+        } else {
+            return (bytes / 1073741824).toFixed(2) + ' GB';
+        }
+    };
+
+    $.storageTypes = JSON.parse($('#StorageTypesData').text());
+
+    $(function () {
+        $('#BackupTable').layTable({
+            even: true, height: 'full',
+            sort: {field: 'id', type: 'desc'},
+            cols: [[
+                {checkbox: true, fixed: true},
+                {field: 'id', title: 'ID', width: 80, align: 'center', sort: true},
+                {field: 'name', title: '{:lang("备份名称")}', minWidth: 200},
+                {field: 'file', title: '{:lang("文件名")}', minWidth: 200},
+                {field: 'tables', title: '{:lang("表数量")}', width: 100, align: 'center'},
+                {field: 'size', title: '{:lang("文件大小")}', width: 160, align: 'center', templet: '#SizeTpl'},
+                {field: 'storage_type', title: '{:lang("存储方式")}', width: 160, align: 'center', templet: '#StorageTpl'},
+                {field: 'storage_url', title: '{:lang("远程链接")}', minWidth: 200, templet: '#StorageUrlTpl'},
+                {field: 'status', title: '{:lang("状态")}', width: 160, align: 'center', templet: '#StatusTpl'},
+                {field: 'create_at', title: '{:lang("创建时间")}', width: 160, align: 'center', sort: true},
+                {toolbar: '#toolbar', title: '{:lang("操作面板")}', align: 'left', fixed: 'right'}
+            ]]
+        });
+    });
+</script>
+{/block}

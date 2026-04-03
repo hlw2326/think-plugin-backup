@@ -1,0 +1,42 @@
+{extend name="main"}
+
+{block name="content"}
+<div class="layui-card padding-20 shadow">
+    <div class="layui-card-header notselect">
+        <span class="help-label">
+            <b style="color:#333!important;">{:lang('备份设置')}</b>
+        </span>
+    </div>
+    <form action="{:sysuri()}" class="layui-form" data-auto="true" method="post">
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="block relative">
+                    <span class="help-label"><b>{:lang('备份存储路径')}</b>Backup Path</span>
+                    <input name="data.backup_path" value='{:sysconf("data.backup_path")}' placeholder="{:lang('留空使用默认路径（runtime/database）')}" class="layui-input">
+                </label>
+                <div class="help-block">{:lang('备份文件存储的绝对路径，留空则自动选择可写目录，建议使用 runtime/database')}</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="block relative">
+                    <span class="help-label"><b>{:lang('当前实际存储位置')}</b>Current Path</span>
+                    <input readonly value='{:runtime_path()}database/' class="layui-input layui-bg-gray">
+                </label>
+                <div class="help-block">{:lang('系统当前实际使用的备份目录，由备份设置优先级自动决定')}</div>
+            </div>
+            <div class="layui-form-item">
+                <span class="help-label"><b>{:lang('远程对象存储')}</b>Remote Storage</span>
+                <div class="layui-textarea help-checks layui-bg-gray ta-pl-15">
+                    {foreach $storage_types as $k => $n}
+                    <input type="radio" name="data.backup_storage_type" value="{$k}" title="{$n}" {if sysconf('data.backup_storage_type') == $k}checked{/if}>
+                    {/foreach}
+                </div>
+                <div class="help-block">{:lang('选择本地存储则仅保存到服务器，切换为对象存储后备份文件将自动同步到远程存储空间')}</div>
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+        <div class="layui-form-item text-center">
+            <button class="layui-btn" type="submit">{:lang('保存配置')}</button>
+        </div>
+    </form>
+</div>
+{/block}

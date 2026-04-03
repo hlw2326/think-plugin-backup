@@ -1,0 +1,94 @@
+{extend name="table"}
+
+{block name="button"}
+<!--{if auth("optimize")}-->
+<a data-action='{:url("optimize")}' data-confirm="{:lang('确定要优化所有表吗？')}" class='layui-btn layui-btn-sm layui-btn-primary'>{:lang('批量优化')}</a>
+<!--{/if}-->
+{/block}
+
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='table/index_search'}
+    <table id="TableList" data-url="{:sysuri('index')}" data-target-search="form.form-search"></table>
+</div>
+
+<script type="text/html" id="SizeTpl">
+    <span>{{- $.formatSize(d.data_size) }}</span>
+</script>
+
+<script type="text/html" id="IndexSizeTpl">
+    <span>{{- $.formatSize(d.index_size) }}</span>
+</script>
+
+<script type="text/html" id="DataFreeTpl">
+    {{# if(d.data_free > 1048576){ }}
+    <span class="color-red">{{- $.formatSize(d.data_free) }}</span>
+    {{# } else if(d.data_free > 0){ }}
+    <span class="color-orange">{{- $.formatSize(d.data_free) }}</span>
+    {{# } else { }}
+    <span class="color-green">-</span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="EngineTpl">
+    {{# if(d.engine === 'MyISAM'){ }}
+    <span class="layui-badge layui-bg-orange">{{d.engine}}</span>
+    {{# } else { }}
+    <span class="layui-badge layui-bg-blue">{{d.engine}}</span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="toolbar">
+    <!--{if auth("info")}-->
+    <a class="layui-btn layui-btn-sm" data-modal='{:url("info")}?table={{d.name}}' data-title="{:lang('表结构')} - {{d.name}}">{:lang('表结构')}</a>
+    <!--{/if}-->
+    <!--{if auth("data")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-primary" data-width="60%" data-offset="10%" data-modal='{:url("data")}?table={{d.name}}&limit=20' data-maxmin="true" data-title="{:lang('数据预览')} - {{d.name}}">{:lang('数 据')}</a>
+    <!--{/if}-->
+    <!--{if auth("optimize")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-normal" data-confirm="{:lang('确定要优化该表吗？')}" data-action="{:url('optimize')}" data-value="table#{{d.name}}" data-loading="true">{:lang('优 化')}</a>
+    <!--{/if}-->
+    <!--{if auth("analyze")}-->
+    <a class="layui-btn layui-btn-sm" data-confirm="{:lang('确定要分析该表吗？')}" data-action="{:url('analyze')}" data-value="table#{{d.name}}" data-loading="true">{:lang('分 析')}</a>
+    <!--{/if}-->
+    <!--{if auth("check")}-->
+    <a class="layui-btn layui-btn-sm layui-btn-warm" data-confirm="{:lang('确定要检查该表吗？')}" data-action="{:url('check')}" data-value="table#{{d.name}}" data-loading="true">{:lang('检 查')}</a>
+    <!--{/if}-->
+</script>
+
+<script>
+    $.formatSize = function (bytes) {
+        if (bytes < 1024) {
+            return bytes + ' B';
+        } else if (bytes < 1048576) {
+            return (bytes / 1024).toFixed(2) + ' KB';
+        } else if (bytes < 1073741824) {
+            return (bytes / 1048576).toFixed(2) + ' MB';
+        } else {
+            return (bytes / 1073741824).toFixed(2) + ' GB';
+        }
+    };
+
+    $(function () {
+        $('#TableList').layTable({
+            even: true, height: 'full',
+            sort: {field: 'data_size', type: 'desc'},
+            limits: [20, 50, 100, 200],
+            limit: 20,
+            totalRow: true,
+            cols: [[
+                {field: 'name', title: '{:lang("表名称")}', width: 260, totalRowText: '{:lang("合计")}', sort: true},
+                {field: 'comment', title: '{:lang("表注释")}', width: 260},
+                {field: 'engine', title: '{:lang("引擎")}', width: 160, align: 'center', templet: '#EngineTpl'},
+                {field: 'rows', title: '{:lang("行数")}', width: 160, align: 'center', sort: true},
+                {field: 'data_size', title: '{:lang("数据大小")}', width: 160, align: 'center', sort: true, templet: '#SizeTpl', totalRow: true},
+                {field: 'index_size', title: '{:lang("索引大小")}', width: 160, align: 'center', templet: '#IndexSizeTpl', totalRow: true, sort: true},
+                {field: 'data_free', title: '{:lang("碎片")}', width: 160, align: 'center', templet: '#DataFreeTpl'},
+                {field: 'collation', title: '{:lang("字符集")}', width: 160, align: 'center'},
+                {field: 'create_time', title: '{:lang("创建时间")}', width: 160, align: 'center', sort: true},
+                {toolbar: '#toolbar', title: '{:lang("操作")}', align: 'left', fixed: 'right'}
+            ]]
+        });
+    });
+</script>
+{/block}

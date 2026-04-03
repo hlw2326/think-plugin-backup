@@ -1,0 +1,86 @@
+<div class="layui-card" style="margin-bottom:0;">
+    <div class="layui-card-header">
+        <b>{:lang('字段信息')}</b>
+        <span class="layui-badge layui-bg-gray" style="margin-left:10px;">{$table}</span>
+    </div>
+    <div class="layui-card-body" style="padding:0;overflow:auto;max-height:420px;">
+        <table class="layui-table" lay-size="sm" lay-skin="line" style="margin: 0;">
+            <thead>
+                <tr>
+                    <th>{:lang('字段名')}</th>
+                    <th>{:lang('类型')}</th>
+                    <th>{:lang('可空')}</th>
+                    <th>{:lang('默认值')}</th>
+                    <th>{:lang('主键')}</th>
+                    <th>{:lang('自增')}</th>
+                    <th>{:lang('字段注释')}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach $columns as $col}
+                <tr>
+                    <td><code>{$col.name}</code></td>
+                    <td><span class="layui-badge layui-bg-gray">{$col.type}</span></td>
+                    <td>{$col.null}</td>
+                    <td>{notempty name='col.default'}{$col.default}{else}<span class="color-gray">-</span>{/notempty}</td>
+                    <td>
+                        {if $col.key eq 'PRI'}
+                        <span class="layui-badge layui-bg-red">PK</span>
+                        {elseif $col.key eq 'UNI'}
+                        <span class="layui-badge layui-bg-orange">UNI</span>
+                        {elseif $col.key eq 'MUL'}
+                        <span class="layui-badge layui-bg-blue">MUL</span>
+                        {else}
+                        <span class="color-gray">-</span>
+                        {/if}
+                    </td>
+                    <td>
+                        {if $col.extra eq 'auto_increment'}
+                        <span class="layui-badge layui-bg-green">AI</span>
+                        {else}
+                        <span class="color-gray">-</span>
+                        {/if}
+                    </td>
+                    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{$col.comment}">{$col.comment|default='-'}</td>
+                </tr>
+                {/foreach}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{notempty name='indexes'}
+<div class="layui-card">
+    <div class="layui-card-header"><b>{:lang('索引信息')}</b></div>
+    <div class="layui-card-body" style="padding:0;overflow:auto;max-height:200px;">
+        <table class="layui-table" lay-size="sm" lay-skin="line" style="margin: 0;">
+            <thead>
+                <tr>
+                    <th>{:lang('索引名')}</th>
+                    <th>{:lang('唯一')}</th>
+                    <th>{:lang('字段')}</th>
+                    <th>{:lang('顺序')}</th>
+                    <th>{:lang('类型')}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach $indexes as $idx}
+                <tr>
+                    <td><code>{$idx.INDEX_NAME}</code></td>
+                    <td>
+                        {if $idx.NON_UNIQUE == 0}
+                        <span class="layui-badge layui-bg-red">UNI</span>
+                        {else}
+                        <span class="layui-badge layui-bg-gray">NON</span>
+                        {/if}
+                    </td>
+                    <td>{$idx.COLUMN_NAME}</td>
+                    <td>{$idx.SEQ_IN_INDEX}</td>
+                    <td>{notempty name='idx.INDEX_TYPE'}{$idx.INDEX_TYPE}{else}BTREE{/notempty}</td>
+                </tr>
+                {/foreach}
+            </tbody>
+        </table>
+    </div>
+</div>
+{/notempty}

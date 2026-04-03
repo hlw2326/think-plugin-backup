@@ -1,0 +1,23 @@
+<form action="{:sysuri()}" method="post" data-auto="true" class="layui-form layui-card" data-table-id="BackupTable">
+    <div class="layui-card-body padding-left-40">
+        <fieldset class="layui-bg-gray">
+            <legend><b class="layui-badge think-bg-violet">{:lang('备份设置')}</b></legend>
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-xs12">
+                    <label class="block relative">
+                        <span class="help-label"><b>{:lang('备份名称')}</b>Name</span>
+                        <input name="name" value='{$vo.name|default=""}' placeholder="{:lang('留空自动生成备份名称')}" class="layui-input">
+                        <span class="help-block">{:lang('留空将自动生成备份名称，格式为 手动备份_YYYYMMDD_NNNN')}</span>
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="hr-line-dashed"></div>
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type="submit">{:lang('开始备份')}</button>
+        <button class="layui-btn layui-btn-danger" type="button" data-close>{:lang('取消操作')}</button>
+    </div>
+</form>
