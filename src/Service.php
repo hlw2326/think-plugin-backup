@@ -34,19 +34,24 @@ class Service extends Plugin
         return [
             [
                 'name' => '数据配置',
-                'icon' => 'layui-icon layui-icon-set',
-                'node' => "{$code}/config/index",
-            ],
-            [
-                'name' => '备份管理',
-                'icon' => 'layui-icon layui-icon-export',
-                'node' => "{$code}/backup/index",
-            ],
-            [
-                'name' => '数据管理',
-                'icon' => 'layui-icon layui-icon-table',
-                'node' => "{$code}/table/index",
-            ],
+                'subs' =>             [
+                    [
+                        'name' => '数据配置',
+                        'icon' => 'layui-icon layui-icon-set',
+                        'node' => "{$code}/config/index",
+                    ],
+                    [
+                        'name' => '备份管理',
+                        'icon' => 'layui-icon layui-icon-export',
+                        'node' => "{$code}/backup/index",
+                    ],
+                    [
+                        'name' => '数据管理',
+                        'icon' => 'layui-icon layui-icon-table',
+                        'node' => "{$code}/table/index",
+                    ]
+                ],
+            ]
         ];
     }
 }
