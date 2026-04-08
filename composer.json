@@ -11,13 +11,11 @@
         }
     ],
     "require": {
-        "php": ">8.2",
-        "ext-json": "*"
+        "php": ">=8.2",
+        "ext-json": "*",
+        "hlw2326/think-plugin-mp-shared": "*"
     },
     "autoload": {
-        "files": [
-            "./src/helper.php"
-        ],
         "psr-4": {
             "plugin\\backup\\": "src"
         }

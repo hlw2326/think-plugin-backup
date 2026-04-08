@@ -26,6 +26,14 @@ class Service extends Plugin
     protected $package = 'hlw2326/think-plugin-backup';
 
     /**
+     * 插件启动
+     */
+    public function boot(): void
+    {
+        // ThinkAdmin 插件根据控制器命名空间自动发现路由
+    }
+
+    /**
      * 注册模块菜单（菜单由 stc 迁移脚本写入 system_menu，此处用于插件中心显示）
      */
     public static function menu(): array

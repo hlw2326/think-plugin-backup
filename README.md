@@ -6,6 +6,51 @@
 
 ---
 
+## 用户解析器注册
+
+插件通过 `UserResolverService` 获取当前登录用户 ID，**具体实现由主应用注册**：
+
+```php
+// 在主应用初始化时注册
+use hlw2326\mp\shared\service\UserResolverService;
+
+UserResolverService::register(function (string $appid): ?string {
+    return \app\mini\model\MiniUser::getCurrentUserId($appid);
+});
+```
+
+---
+
+## API 接口
+
+ThinkAdmin 插件根据控制器命名空间自动发现路由。
+
+路由映射规则：`plugin\{code}\controller\{module}\{controller}@{action}`
+
+本插件 `{code}` 为 `backup`，控制器在 `controller/api/v1/` 下：
+
+```
+plugin\backup\controller\api\v1\Backup::list   → /backup/api/v1/backup/list
+plugin\backup\controller\api\v1\Backup::stats  → /backup/api/v1/backup/stats
+plugin\backup\controller\api\v1\Backup::tables → /backup/api/v1/backup/tables
+```
+
+### 接口认证
+
+| 参数 | 位置 | 说明 |
+|---|---|---|
+| `appid` | Header / GET / POST | 小程序标识，用于解析用户身份 |
+
+### 接口列表
+
+| 接口 | 方法 | 登录 | 说明 |
+|---|---|---|---|
+| `/backup/api/v1/backup/list` | GET | 是 | 获取备份记录列表 |
+| `/backup/api/v1/backup/stats` | GET | 是 | 获取备份统计 |
+| `/backup/api/v1/backup/tables` | GET | 否 | 获取可备份的表列表 |
+
+---
+
 ## 功能特性
 
 - **纯 PHP 备份**：无需 shell/mysqldump，直接通过 PDO 导出数据库结构和数据

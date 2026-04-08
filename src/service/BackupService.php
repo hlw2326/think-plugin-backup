@@ -457,6 +457,34 @@ class BackupService extends Service
     }
 
     /**
+     * 获取所有表信息（名称、行数、大小）
+     * @return array
+     */
+    public function getTables(): array
+    {
+        $pdo = $this->getPdo();
+        $stmt = $pdo->query("SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'");
+        $tables = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+
+        $list = [];
+        foreach ($tables as $table) {
+            $countStmt = $pdo->query("SELECT COUNT(*) FROM `{$table}`");
+            $count = (int) $countStmt->fetch(\PDO::FETCH_COLUMN);
+
+            $sizeStmt = $pdo->query("SELECT (DATA_LENGTH + INDEX_LENGTH) as size FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '{$table}'");
+            $sizeRow = $sizeStmt->fetch(\PDO::FETCH_ASSOC);
+            $size = intval($sizeRow['size'] ?? 0);
+
+            $list[] = [
+                'name' => $table,
+                'rows' => $count,
+                'size' => $size,
+            ];
+        }
+        return $list;
+    }
+
+    /**
      * 清理孤立的备份文件（无数据库记录的）
      * @return int 删除的文件数量
      */
