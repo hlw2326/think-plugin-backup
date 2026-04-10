@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace plugin\backup\controller\api\v1;
 
+use hlw2326\mp\shared\controller\api\v1\Base;
 use plugin\backup\model\PluginBackupRecord;
 use plugin\backup\service\BackupService;
 
